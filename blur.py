@@ -4,7 +4,7 @@ from scipy.ndimage import filters
 from pylab import *
 
 cv2.namedWindow("output", cv2.WINDOW_NORMAL)        # Create window with freedom of dimensions
-img = cv2.imread("hyuk-hyuk.jpg")                        # Read image
+img = cv2.imread("istock_000018108990_small_cropped-e1355508465774.jpg")                        # Read image
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -20,7 +20,6 @@ for (x,y,w,h) in faces:
     for i in range(3):
         croppedim[:, :, i] = filters.gaussian_filter(roi_color[:, :, i], 20)
 
-    croppedim = uint8(croppedim)
 
     newim = img
     newim[y:y+h, x:x+w] = croppedim
