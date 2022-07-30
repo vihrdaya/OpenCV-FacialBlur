@@ -1,31 +1,37 @@
 import numpy as np
-import cv2
+import cv2 as cv
 from scipy.ndimage import filters
-from pylab import *
+#from pylab import *
 
-cv2.namedWindow("output", cv2.WINDOW_NORMAL)        # Create window with freedom of dimensions
-img = cv2.imread("istock_000018108990_small_cropped-e1355508465774.jpg")                        # Read image
+video = cv.VideoCapture(0)
 
-face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-
-for (x,y,w,h) in faces:
-#    img = cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-    roi_gray = gray[y:y+h, x:x+w]
-    roi_color = img[y:y+h, x:x+w]
-    box = img[y:y+h, x:x+w]
-    croppedim = np.zeros(roi_color.shape)
-    for i in range(3):
-        croppedim[:, :, i] = filters.gaussian_filter(roi_color[:, :, i], 20)
+face_cascade = cv.CascadeClassifier('haarcascade_frontalface_default.xml')
 
 
-    newim = img
-    newim[y:y+h, x:x+w] = croppedim
+while True:
+
+    ret, frame = video.read()
+
+    #gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(frame, 1.3, 5)
+
+    for (x, y, w, h) in faces:
+        #        cv.rectangle(frame,(x,y),(x+w, y+h),(255, 0, 0), 2)
+        roi_color = frame[y:y+h, x:x+w]
+        box = frame[y:y+h, x:x+w]
+        croppedim = np.zeros(roi_color.shape)
+        for i in range(3):
+            croppedim[:, :, i] = filters.gaussian_filter(
+                roi_color[:, :, i], 20)
+
+    frame[y:y+h, x:x+w] = croppedim
+
+    cv.imshow('output', frame)
+    k = cv.waitKey(1)
+    if k == ord('q'):
+        break
+video.release()
+cv.destroyAllWindows()
 
 
-
-
-cv2.imshow("output", newim)                            # Show image
-cv2.waitKey(0)           
+#cv.imshow("output", newim)
