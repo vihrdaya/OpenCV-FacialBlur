@@ -4,9 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+opencv-python = ">=4.9"
+mediapipe = ">=0.10"
+numpy = ">=1.26"
 
 [dev-packages]
 ipykernel = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.11"
